@@ -1,6 +1,7 @@
 {
-  "routes": [
-    { "src": "^/$", "dest": "/index.html" },
-    { "src": "^/landings/([^/]+)/?$", "dest": "/landings/$1/index.html" }
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/landings/:slug", "destination": "/landings/:slug/index.html" },
+    { "source": "/landings/:slug/", "destination": "/landings/:slug/index.html" }
   ]
 }
