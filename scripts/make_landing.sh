@@ -15,6 +15,7 @@ fi
 REPO_DIR="$HOME/morphic-landings"
 OUT_DIR="$REPO_DIR/public/landings/$SLUG"
 FILE="$OUT_DIR/index.html"
+INDEX="$REPO_DIR/public/index.html"
 
 cd "$REPO_DIR"
 git pull --rebase
@@ -106,11 +107,15 @@ cat > "$FILE" <<EOF
 </html>
 EOF
 
-# actualizar public/index.html agregando link si no existe
-INDEX="$REPO_DIR/public/index.html"
+# actualizar public/index.html agregando link si no existe (Mac y Linux)
 if [[ -f "$INDEX" ]] && ! grep -q "/landings/$SLUG" "$INDEX"; then
-  # inserta un <li> antes del cierre </ul>
-  sed -i "s#</ul>#  <li><a href=\"/landings/$SLUG\">$SLUG</a></li>\n</ul>#g" "$INDEX" || true
+  INSERT="  <li><a href=\"/landings/$SLUG\">$SLUG</a></li>"
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' "s#</ul>#$INSERT\n</ul>#g" "$INDEX" || true
+  else
+    sed -i "s#</ul>#$INSERT\n</ul>#g" "$INDEX" || true
+  fi
 fi
 
 git add .
