@@ -1,2 +1,1 @@
-# morphic-landings
-Landing factory for Morphic Labs
+# Morphic Landings
