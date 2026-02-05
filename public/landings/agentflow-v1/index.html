@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTFLOW // Propuesta 1 - Cyberpunk</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --cyan: #00f5ff;
+            --magenta: #ff00ff;
+            --green: #00ff88;
+            --dark: #0a0a0f;
+            --darker: #050508;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Grid background */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+        
+        /* Scanline */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: scan 4s linear infinite;
+            opacity: 0.4;
+            z-index: 100;
+            pointer-events: none;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100vh; } }
+        
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+        }
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        .logo span { color: var(--magenta); }
+        .nav-btn {
+            font-family: 'JetBrains Mono', monospace;
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: var(--cyan);
+            color: var(--dark);
+        }
+        
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 3rem 4rem;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        /* Glitch text */
+        .glitch {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            position: relative;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+        .glitch::before {
+            color: var(--cyan);
+            animation: glitch1 2s infinite linear;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+        .glitch::after {
+            color: var(--magenta);
+            animation: glitch2 3s infinite linear;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+        @keyframes glitch1 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+        @keyframes glitch2 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
+        }
+        
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255,255,255,0.7);
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+        }
+        .subtitle::before { content: '> '; color: var(--green); }
+        
+        .hero-desc {
+            color: rgba(255,255,255,0.6);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        /* Terminal */
+        .terminal {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .terminal-header {
+            background: rgba(0, 245, 255, 0.1);
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+        }
+        .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .terminal-dot:nth-child(1) { background: #ff5f57; }
+        .terminal-dot:nth-child(2) { background: #febc2e; }
+        .terminal-dot:nth-child(3) { background: #28c840; }
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+        .terminal-line { margin: 0.5rem 0; opacity: 0; animation: fadeIn 0.3s forwards; }
+        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(2) { animation-delay: 1s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.5s; }
+        .terminal-line:nth-child(4) { animation-delay: 2s; }
+        .terminal-line:nth-child(5) { animation-delay: 2.5s; }
+        .terminal-line:nth-child(6) { animation-delay: 3s; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .prompt { color: var(--magenta); }
+        .success { color: var(--green); }
+        .info { color: var(--cyan); }
+        
+        /* CTA Buttons */
+        .cta-buttons { display: flex; gap: 1rem; margin-top: 2rem; }
+        .btn {
+            font-family: 'JetBrains Mono', monospace;
+            padding: 1rem 2rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--cyan);
+            color: var(--dark);
+            border: none;
+        }
+        .btn-primary:hover { box-shadow: 0 0 30px var(--cyan); }
+        .btn-secondary {
+            background: transparent;
+            color: var(--magenta);
+            border: 1px solid var(--magenta);
+        }
+        .btn-secondary:hover { background: rgba(255, 0, 255, 0.1); }
+        
+        /* Features */
+        .features {
+            padding: 6rem 3rem;
+            background: var(--darker);
+        }
+        .features-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .features-header h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+        }
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .feature-card {
+            background: rgba(0, 245, 255, 0.03);
+            border: 1px solid rgba(0, 245, 255, 0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card h3 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            margin-bottom: 0.75rem;
+        }
+        .feature-card p { color: rgba(255,255,255,0.6); line-height: 1.7; }
+        
+        /* Pricing */
+        .pricing {
+            padding: 6rem 3rem;
+        }
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .pricing-header h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--green);
+        }
+        .pricing-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .price-card {
+            background: rgba(0, 255, 136, 0.03);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .price-card:hover {
+            border-color: var(--green);
+            transform: translateY(-5px);
+        }
+        .price-card.featured {
+            border-color: var(--cyan);
+            background: rgba(0, 245, 255, 0.05);
+        }
+        .price-card.featured::before {
+            content: 'POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cyan);
+            color: var(--dark);
+            padding: 0.25rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+        .price-name {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--cyan);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .price-amount {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .price-amount span { font-size: 1rem; color: rgba(255,255,255,0.5); }
+        .price-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        .price-features li {
+            padding: 0.5rem 0;
+            color: rgba(255,255,255,0.7);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .price-features li::before {
+            content: '✓ ';
+            color: var(--green);
+        }
+        
+        /* Dashboard Preview */
+        .dashboard-section {
+            padding: 6rem 3rem;
+            background: var(--darker);
+        }
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .dashboard-header h2 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--magenta);
+        }
+        .dashboard-preview {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .dashboard-bar {
+            background: rgba(255, 0, 255, 0.1);
+            padding: 0.75rem 1rem;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 0, 255, 0.2);
+        }
+        .dashboard-content {
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+        }
+        .dashboard-content pre {
+            white-space: pre-wrap;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 3rem;
+            text-align: center;
+            border-top: 1px solid rgba(0, 245, 255, 0.1);
+        }
+        footer p {
+            font-family: 'JetBrains Mono', monospace;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+        
+        /* Stats bar */
+        .stats-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 1px solid rgba(0, 245, 255, 0.2);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            z-index: 50;
+        }
+        .stat { display: flex; gap: 0.5rem; }
+        .stat-label { color: rgba(255,255,255,0.5); }
+        .stat-value { color: var(--cyan); }
+        .stat-value.live { animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-content { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .stats-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
+    
+    <nav>
+        <div class="logo">AGENT<span>FLOW</span></div>
+        <button class="nav-btn">[ INICIAR ]</button>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div>
+                <h1 class="glitch" data-text="AGENTFLOW">AGENTFLOW</h1>
+                <p class="subtitle">Bots de IA que parecen humanos</p>
+                <p class="hero-desc">
+                    Despliega agentes inteligentes en WhatsApp que venden, atienden y recuerdan cada conversación. 
+                    Tu negocio en autopilot, 24/7.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#pricing" class="btn btn-primary">[ COMENZAR ]</a>
+                    <a href="#demo" class="btn btn-secondary">[ VER DEMO ]</a>
+                </div>
+            </div>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line"><span class="prompt">$</span> agentflow deploy --channel=whatsapp</div>
+                    <div class="terminal-line"><span class="success">✓</span> Agente conectado a +52 811 234 5678</div>
+                    <div class="terminal-line"><span class="info">→</span> Cargando base de conocimiento...</div>
+                    <div class="terminal-line"><span class="info">→</span> Memoria: <span class="success">ACTIVA</span></div>
+                    <div class="terminal-line"><span class="info">→</span> Modo: <span class="success">VENTAS 24/7</span></div>
+                    <div class="terminal-line"><span class="success">✓</span> Listo. Tu agente está vendiendo.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features -->
+    <section class="features">
+        <div class="features-header">
+            <h2>[ CAPACIDADES ]</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>MEMORIA INFINITA</h3>
+                <p>Tu agente recuerda cada conversación, cada cliente, cada preferencia. Como un empleado que nunca olvida.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>WHATSAPP NATIVO</h3>
+                <p>Integración directa con WhatsApp Business. Tus clientes chatean normal, tu agente responde inteligente.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>CIERRA VENTAS</h3>
+                <p>No es un chatbot tonto. Es un vendedor entrenado que entiende objeciones y guía hacia la compra.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>RESPUESTA INMEDIATA</h3>
+                <p>Responde en segundos, a cualquier hora. Mientras duermes, tu agente trabaja.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>DASHBOARD COMPLETO</h3>
+                <p>Ve todas las conversaciones, métricas, y ajusta la personalidad de tu agente en tiempo real.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>SEGURO Y PRIVADO</h3>
+                <p>Tus datos y los de tus clientes protegidos. Infraestructura de nivel empresarial.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="pricing-header">
+            <h2>[ PLANES ]</h2>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-name">STARTER</div>
+                <div class="price-amount">$29<span>/mes</span></div>
+                <ul class="price-features">
+                    <li>1 agente / 1 número</li>
+                    <li>500 mensajes/mes</li>
+                    <li>Memoria básica</li>
+                    <li>Dashboard web</li>
+                    <li>Soporte email</li>
+                </ul>
+                <a href="#" class="btn btn-secondary" style="width: 100%;">ELEGIR</a>
+            </div>
+            <div class="price-card featured">
+                <div class="price-name">PRO</div>
+                <div class="price-amount">$79<span>/mes</span></div>
+                <ul class="price-features">
+                    <li>1 agente / 1 número</li>
+                    <li>2,000 mensajes/mes</li>
+                    <li>Memoria completa</li>
+                    <li>Integraciones</li>
+                    <li>Analytics avanzado</li>
+                    <li>Soporte prioritario</li>
+                </ul>
+                <a href="#" class="btn btn-primary" style="width: 100%;">ELEGIR</a>
+            </div>
+            <div class="price-card">
+                <div class="price-name">BUSINESS</div>
+                <div class="price-amount">$199<span>/mes</span></div>
+                <ul class="price-features">
+                    <li>3 agentes / 3 números</li>
+                    <li>10,000 mensajes/mes</li>
+                    <li>API acceso</li>
+                    <li>White-label</li>
+                    <li>Soporte dedicado</li>
+                </ul>
+                <a href="#" class="btn btn-secondary" style="width: 100%;">ELEGIR</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Dashboard Preview -->
+    <section class="dashboard-section" id="demo">
+        <div class="dashboard-header">
+            <h2>[ DASHBOARD ]</h2>
+        </div>
+        <div class="dashboard-preview">
+            <div class="dashboard-bar">
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+            </div>
+            <div class="dashboard-content">
+<pre>
+┌────────────────────────────────────────────────────────────────────┐
+│  🤖 AGENTFLOW DASHBOARD                        [+ Nuevo Agente]   │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│  AGENTES ACTIVOS                                                   │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
+│  │ 🟢 Sales Bot    │  │ 🟢 Support Bot  │  │ 🔴 Lead Bot     │    │
+│  │ +52 811 234 56  │  │ Web Widget      │  │ Pausado         │    │
+│  │ 156 msgs hoy    │  │ 43 msgs hoy     │  │                 │    │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘    │
+│                                                                    │
+│  MÉTRICAS HOY                                                      │
+│  ────────────────────────────────────────                          │
+│  Mensajes: 199  │  Respuesta: 2.1s  │  Ventas: 8  │  Conv: 12%    │
+│                                                                    │
+│  ÚLTIMA CONVERSACIÓN                                               │
+│  ────────────────────────────────────────                          │
+│  👤 Cliente: "¿Cuánto cuesta el plan premium?"                     │
+│  🤖 Agente: "El plan premium cuesta $99/mes e incluye..."          │
+│                                                                    │
+└────────────────────────────────────────────────────────────────────┘
+</pre>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>© 2026 AGENTFLOW // PROPUESTA V1 - CYBERPUNK</p>
+    </footer>
+    
+    <div class="stats-bar">
+        <div class="stat">
+            <span class="stat-label">STATUS:</span>
+            <span class="stat-value live">● ONLINE</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">AGENTES ACTIVOS:</span>
+            <span class="stat-value">2,847</span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">MENSAJES HOY:</span>
+            <span class="stat-value">1.2M</span>
+        </div>
+    </div>
+</body>
+</html>

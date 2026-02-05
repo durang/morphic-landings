@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLUX // Propuesta 3 - Ultra Tech</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --neon-blue: #00d4ff;
+            --neon-purple: #b400ff;
+            --neon-green: #00ff9d;
+            --dark: #030308;
+            --dark-2: #0a0a12;
+            --glass: rgba(255,255,255,0.03);
+        }
+        
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--dark);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated gradient mesh */
+        .mesh-bg {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(180, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 255, 157, 0.05) 0%, transparent 50%);
+            animation: meshMove 20s ease-in-out infinite;
+        }
+        @keyframes meshMove {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(2deg); }
+        }
+        
+        /* Noise overlay */
+        .noise {
+            position: fixed;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            background: rgba(3, 3, 8, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .nav-btn {
+            font-family: 'Space Mono', monospace;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            color: var(--dark);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0, 212, 255, 0.5); }
+        
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 1.5rem;
+            position: relative;
+        }
+        
+        .hero-content { max-width: 900px; position: relative; z-index: 10; }
+        
+        /* Floating badge */
+        .float-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-green);
+            margin-bottom: 2rem;
+        }
+        .float-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.04em;
+        }
+        h1 .line-1 { display: block; color: rgba(255,255,255,0.9); }
+        h1 .line-2 {
+            display: block;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradientShift 5s linear infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .hero-desc {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+        }
+        
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            font-family: 'Space Mono', monospace;
+            padding: 1rem 2rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-glow {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            color: var(--dark);
+            border: none;
+        }
+        .btn-glow:hover { box-shadow: 0 0 40px rgba(0, 212, 255, 0.6); transform: translateY(-2px); }
+        .btn-ghost {
+            background: transparent;
+            color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-ghost:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+        
+        /* Terminal Demo */
+        .terminal-demo {
+            margin-top: 4rem;
+            background: var(--dark-2);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            text-align: left;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .terminal-bar {
+            background: rgba(255,255,255,0.05);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .terminal-dot:nth-child(1) { background: #ff5f57; }
+        .terminal-dot:nth-child(2) { background: #febc2e; }
+        .terminal-dot:nth-child(3) { background: #28c840; }
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+        }
+        .t-prompt { color: var(--neon-purple); }
+        .t-cmd { color: rgba(255,255,255,0.9); }
+        .t-success { color: var(--neon-green); }
+        .t-info { color: var(--neon-blue); }
+        .t-line { opacity: 0; animation: typeLine 0.3s forwards; }
+        .t-line:nth-child(1) { animation-delay: 0.2s; }
+        .t-line:nth-child(2) { animation-delay: 0.6s; }
+        .t-line:nth-child(3) { animation-delay: 1s; }
+        .t-line:nth-child(4) { animation-delay: 1.4s; }
+        .t-line:nth-child(5) { animation-delay: 1.8s; }
+        @keyframes typeLine { to { opacity: 1; } }
+        
+        /* Features */
+        .features {
+            padding: 6rem 1.5rem;
+            position: relative;
+        }
+        .section-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .section-heading {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4rem;
+            letter-spacing: -0.02em;
+        }
+        .features-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s;
+        }
+        .feature-card:hover {
+            border-color: var(--neon-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+        }
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .feature-card p {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        
+        /* Pricing */
+        .pricing {
+            padding: 6rem 1.5rem;
+            background: var(--dark-2);
+        }
+        .pricing-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .price-card {
+            background: var(--dark);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .price-card:hover { border-color: rgba(255,255,255,0.1); }
+        .price-card.pop {
+            border-color: var(--neon-blue);
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, var(--dark) 50%);
+        }
+        .price-card.pop::before {
+            content: 'RECOMENDADO';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            color: var(--dark);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+        .price-name {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
+        }
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+        .price-amount span { font-size: 1rem; color: rgba(255,255,255,0.4); font-weight: 400; }
+        .price-desc {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            margin: 0.75rem 0 1.5rem;
+        }
+        .price-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .price-features li {
+            padding: 0.6rem 0;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .price-features li::before {
+            content: '✓';
+            color: var(--neon-green);
+            font-weight: 700;
+        }
+        .price-btn {
+            width: 100%;
+            padding: 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px;
+        }
+        .price-btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        .price-btn-outline:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+        .price-btn-fill {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            color: var(--dark);
+        }
+        .price-btn-fill:hover { box-shadow: 0 0 30px rgba(0, 212, 255, 0.4); }
+        
+        /* CTA */
+        .cta-section {
+            padding: 8rem 1.5rem;
+            text-align: center;
+        }
+        .cta-section h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .cta-section p {
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.3);
+        }
+        
+        /* Mobile fix */
+        @media (max-width: 768px) {
+            nav { padding: 1rem; }
+            .hero { padding: 5rem 1rem; }
+            .terminal-demo { margin-top: 2rem; }
+            .features, .pricing, .cta-section { padding: 4rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mesh-bg"></div>
+    <div class="noise"></div>
+    
+    <nav>
+        <div class="logo">FLUX.ai</div>
+        <button class="nav-btn">EMPEZAR</button>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <div class="float-badge">Sistema activo • 2,847 agentes desplegados</div>
+            <h1>
+                <span class="line-1">Agentes de IA que</span>
+                <span class="line-2">venden mientras duermes</span>
+            </h1>
+            <p class="hero-desc">
+                Despliega bots inteligentes en WhatsApp que atienden, venden y recuerdan cada conversación. 
+                Tu negocio en autopilot, 24 horas, 7 días.
+            </p>
+            <div class="cta-group">
+                <a href="#pricing" class="btn btn-glow">CREAR MI AGENTE →</a>
+                <a href="#demo" class="btn btn-ghost">VER DEMO</a>
+            </div>
+            
+            <div class="terminal-demo">
+                <div class="terminal-bar">
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-title">flux-cli</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="t-line"><span class="t-prompt">$</span> <span class="t-cmd">flux deploy --name="SalesBot" --channel=whatsapp</span></div>
+                    <div class="t-line"><span class="t-success">✓</span> Agente creado exitosamente</div>
+                    <div class="t-line"><span class="t-info">→</span> Conectado a WhatsApp +52 811 234 5678</div>
+                    <div class="t-line"><span class="t-info">→</span> Memoria persistente: <span class="t-success">ACTIVA</span></div>
+                    <div class="t-line"><span class="t-success">✓</span> Listo. Tu agente está vendiendo 24/7.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="section-title">Capacidades</div>
+        <h2 class="section-heading">Todo lo que tu negocio necesita</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Memoria infinita</h3>
+                <p>Tu agente recuerda cada cliente, cada conversación, cada preferencia. Personalización real.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>WhatsApp nativo</h3>
+                <p>Integración directa. Tus clientes chatean normal, tu agente responde inteligente.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Respuesta inmediata</h3>
+                <p>Menos de 3 segundos. A cualquier hora. Mientras duermes, tu agente trabaja.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Cierra ventas</h3>
+                <p>No es un chatbot tonto. Es un vendedor entrenado que guía hacia la compra.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Dashboard completo</h3>
+                <p>Ve conversaciones, métricas, y ajusta tu agente en tiempo real.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Seguridad total</h3>
+                <p>Encriptación end-to-end. Infraestructura de nivel empresarial.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing" id="pricing">
+        <div class="section-title">Planes</div>
+        <h2 class="section-heading">Simple. Sin límites de mensajes.</h2>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-name">STARTER</div>
+                <div class="price-amount">$29<span>/mes</span></div>
+                <p class="price-desc">Para empezar a automatizar</p>
+                <ul class="price-features">
+                    <li>1 agente</li>
+                    <li>1 número WhatsApp</li>
+                    <li>Mensajes ilimitados</li>
+                    <li>Memoria básica</li>
+                    <li>Dashboard web</li>
+                </ul>
+                <button class="price-btn price-btn-outline">Comenzar</button>
+            </div>
+            <div class="price-card pop">
+                <div class="price-name">PRO</div>
+                <div class="price-amount">$79<span>/mes</span></div>
+                <p class="price-desc">Para negocios que crecen</p>
+                <ul class="price-features">
+                    <li>1 agente</li>
+                    <li>1 número WhatsApp</li>
+                    <li>Mensajes ilimitados</li>
+                    <li>Memoria completa</li>
+                    <li>Integraciones</li>
+                    <li>Analytics avanzado</li>
+                </ul>
+                <button class="price-btn price-btn-fill">Comenzar</button>
+            </div>
+            <div class="price-card">
+                <div class="price-name">BUSINESS</div>
+                <div class="price-amount">$199<span>/mes</span></div>
+                <p class="price-desc">Para equipos y agencias</p>
+                <ul class="price-features">
+                    <li>5 agentes</li>
+                    <li>5 números WhatsApp</li>
+                    <li>Mensajes ilimitados</li>
+                    <li>API acceso</li>
+                    <li>White-label</li>
+                    <li>Soporte dedicado</li>
+                </ul>
+                <button class="price-btn price-btn-outline">Contactar</button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-section">
+        <h2>¿Listo para automatizar?</h2>
+        <p>Empieza hoy. Sin tarjeta de crédito.</p>
+        <a href="#" class="btn btn-glow">CREAR MI AGENTE →</a>
+    </section>
+    
+    <footer>
+        © 2026 FLUX.ai // PROPUESTA V3 - ULTRA TECH
+    </footer>
+</body>
+</html>

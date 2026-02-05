@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentFlow // Propuesta 2 - Modern Dark</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --dark: #09090b;
+            --dark-2: #18181b;
+            --dark-3: #27272a;
+            --gray: #71717a;
+            --light: #fafafa;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Gradient orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .orb-1 { width: 600px; height: 600px; background: var(--primary); top: -200px; left: -200px; }
+        .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -200px; right: -200px; }
+        
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.25rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--dark-3);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--gray); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--light); }
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary-light); transform: translateY(-2px); }
+        
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 3rem 4rem;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--dark-2);
+            border: 1px solid var(--dark-3);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+        h1 .gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+        
+        .cta-buttons { display: flex; gap: 1rem; }
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4); }
+        .btn-secondary {
+            background: var(--dark-2);
+            color: var(--light);
+            border: 1px solid var(--dark-3);
+        }
+        .btn-secondary:hover { background: var(--dark-3); }
+        
+        /* Dashboard Preview Card */
+        .dashboard-card {
+            background: var(--dark-2);
+            border: 1px solid var(--dark-3);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .dashboard-header {
+            background: var(--dark-3);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .dashboard-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dashboard-dot:nth-child(1) { background: #ff5f57; }
+        .dashboard-dot:nth-child(2) { background: #febc2e; }
+        .dashboard-dot:nth-child(3) { background: #28c840; }
+        .dashboard-body { padding: 1.5rem; }
+        
+        .agent-cards { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .agent-card {
+            flex: 1;
+            background: var(--dark-3);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        .agent-status { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.online { background: var(--success); }
+        .status-dot.offline { background: var(--gray); }
+        .agent-name { font-weight: 600; font-size: 0.9rem; }
+        .agent-channel { font-size: 0.75rem; color: var(--gray); }
+        .agent-msgs { font-size: 0.8rem; color: var(--accent); margin-top: 0.5rem; }
+        
+        .metrics-row { display: flex; gap: 1rem; }
+        .metric {
+            flex: 1;
+            background: var(--dark-3);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .metric-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+        .metric-label { font-size: 0.75rem; color: var(--gray); }
+        
+        /* Features */
+        .features {
+            padding: 6rem 3rem;
+            position: relative;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .section-header p { color: var(--gray); font-size: 1.1rem; }
+        
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .feature-card {
+            background: var(--dark-2);
+            border: 1px solid var(--dark-3);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .feature-card p { color: var(--gray); font-size: 0.95rem; }
+        
+        /* Pricing */
+        .pricing {
+            padding: 6rem 3rem;
+            background: var(--dark-2);
+        }
+        .pricing-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .price-card {
+            background: var(--dark);
+            border: 1px solid var(--dark-3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .price-card:hover { border-color: var(--primary); }
+        .price-card.featured {
+            border-color: var(--primary);
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, var(--dark) 100%);
+        }
+        .price-card.featured::before {
+            content: 'MÁS POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .price-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+        .price-amount span { font-size: 1rem; color: var(--gray); font-weight: 500; }
+        .price-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 1rem 0 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--dark-3);
+        }
+        .price-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .price-features li {
+            padding: 0.5rem 0;
+            color: var(--light);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .price-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+        }
+        .price-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+        }
+        .price-btn-outline {
+            background: transparent;
+            border: 1px solid var(--dark-3);
+            color: var(--light);
+        }
+        .price-btn-outline:hover { background: var(--dark-3); }
+        .price-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+        .price-btn-primary:hover { transform: translateY(-2px); }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 8rem 3rem;
+            text-align: center;
+            position: relative;
+        }
+        .cta-section h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .cta-section p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 3rem;
+            text-align: center;
+            border-top: 1px solid var(--dark-3);
+        }
+        footer p { color: var(--gray); font-size: 0.9rem; }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-content { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    
+    <nav>
+        <div class="logo">AgentFlow</div>
+        <div class="nav-links">
+            <a href="#features">Funciones</a>
+            <a href="#pricing">Precios</a>
+            <a href="#demo">Demo</a>
+        </div>
+        <button class="nav-btn">Comenzar Gratis</button>
+    </nav>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div>
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    +2,000 negocios activos
+                </div>
+                <h1>Bots de WhatsApp que <span class="gradient">realmente venden</span></h1>
+                <p class="hero-desc">
+                    Despliega agentes de IA que atienden, venden y recuerdan cada cliente. 
+                    Tu negocio trabajando 24/7, incluso mientras duermes.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#pricing" class="btn btn-primary">
+                        Comenzar Ahora →
+                    </a>
+                    <a href="#demo" class="btn btn-secondary">
+                        Ver Demo
+                    </a>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <span class="dashboard-dot"></span>
+                    <span class="dashboard-dot"></span>
+                    <span class="dashboard-dot"></span>
+                </div>
+                <div class="dashboard-body">
+                    <div class="agent-cards">
+                        <div class="agent-card">
+                            <div class="agent-status">
+                                <span class="status-dot online"></span>
+                                <span class="agent-name">Sales Bot</span>
+                            </div>
+                            <div class="agent-channel">WhatsApp +52 811...</div>
+                            <div class="agent-msgs">156 mensajes hoy</div>
+                        </div>
+                        <div class="agent-card">
+                            <div class="agent-status">
+                                <span class="status-dot online"></span>
+                                <span class="agent-name">Support Bot</span>
+                            </div>
+                            <div class="agent-channel">Web Widget</div>
+                            <div class="agent-msgs">43 mensajes hoy</div>
+                        </div>
+                    </div>
+                    <div class="metrics-row">
+                        <div class="metric">
+                            <div class="metric-value">199</div>
+                            <div class="metric-label">Mensajes</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">2.1s</div>
+                            <div class="metric-label">Respuesta</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">12%</div>
+                            <div class="metric-label">Conversión</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Todo lo que necesitas</h2>
+            <p>Herramientas poderosas para automatizar tu negocio</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Memoria Persistente</h3>
+                <p>Tu agente recuerda cada conversación y cada cliente. Personalización real.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>WhatsApp Nativo</h3>
+                <p>Integración directa. Tus clientes chatean normal, el bot responde inteligente.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Analytics en Tiempo Real</h3>
+                <p>Métricas de conversación, conversiones y rendimiento al instante.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Entrena tu Bot</h3>
+                <p>Sube tu información y el bot aprende tu negocio en minutos.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Respuesta Instantánea</h3>
+                <p>Menos de 3 segundos de respuesta. 24/7/365.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Seguridad Total</h3>
+                <p>Encriptación end-to-end. Tus datos siempre protegidos.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="section-header">
+            <h2>Planes simples, sin sorpresas</h2>
+            <p>Cancela cuando quieras. Sin contratos.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-name">Starter</div>
+                <div class="price-amount">$29<span>/mes</span></div>
+                <p class="price-desc">Perfecto para empezar a automatizar</p>
+                <ul class="price-features">
+                    <li>1 agente / 1 número</li>
+                    <li>500 mensajes/mes</li>
+                    <li>Memoria básica</li>
+                    <li>Dashboard web</li>
+                    <li>Soporte por email</li>
+                </ul>
+                <button class="price-btn price-btn-outline">Comenzar</button>
+            </div>
+            <div class="price-card featured">
+                <div class="price-name">Pro</div>
+                <div class="price-amount">$79<span>/mes</span></div>
+                <p class="price-desc">Para negocios que quieren crecer</p>
+                <ul class="price-features">
+                    <li>1 agente / 1 número</li>
+                    <li>2,000 mensajes/mes</li>
+                    <li>Memoria completa</li>
+                    <li>Integraciones</li>
+                    <li>Analytics avanzado</li>
+                    <li>Soporte prioritario</li>
+                </ul>
+                <button class="price-btn price-btn-primary">Comenzar</button>
+            </div>
+            <div class="price-card">
+                <div class="price-name">Business</div>
+                <div class="price-amount">$199<span>/mes</span></div>
+                <p class="price-desc">Para equipos y agencias</p>
+                <ul class="price-features">
+                    <li>3 agentes / 3 números</li>
+                    <li>10,000 mensajes/mes</li>
+                    <li>API acceso</li>
+                    <li>White-label</li>
+                    <li>Soporte dedicado</li>
+                </ul>
+                <button class="price-btn price-btn-outline">Contactar</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>¿Listo para automatizar?</h2>
+        <p>Empieza gratis hoy. Sin tarjeta de crédito.</p>
+        <a href="#" class="btn btn-primary">Crear mi Agente →</a>
+    </section>
+    
+    <footer>
+        <p>© 2026 AgentFlow // PROPUESTA V2 - MODERN DARK</p>
+    </footer>
+</body>
+</html>

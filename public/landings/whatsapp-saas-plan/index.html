@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Bots WhatsApp - Plan de Negocio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f8fafc; 
+            color: #1e293b;
+            line-height: 1.7;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+        }
+        header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+        header p { color: #94a3b8; font-size: 1.1rem; }
+        header .date { color: #64748b; font-size: 0.9rem; margin-top: 1rem; }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #334155;
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p { margin-bottom: 1rem; color: #475569; }
+        
+        ul, ol { margin: 1rem 0; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; color: #475569; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th { background: #f1f5f9; font-weight: 600; color: #334155; }
+        tr:hover { background: #f8fafc; }
+        
+        .highlight {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .highlight h3 { color: white; margin-top: 0; }
+        .highlight p { color: rgba(255,255,255,0.9); }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            white-space: pre;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+        .card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .card p { font-size: 0.9rem; margin: 0; }
+        
+        .price-card {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .price-card h4 { color: white; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .price-card .price { font-size: 2.5rem; font-weight: 800; }
+        .price-card .period { font-size: 0.9rem; opacity: 0.8; }
+        .price-card ul { text-align: left; margin-top: 1rem; }
+        .price-card li { color: rgba(255,255,255,0.9); }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            background: #6366f1;
+            border-radius: 50%;
+            transform: translateX(-5px);
+        }
+        .timeline-item h4 { color: #0f172a; margin-bottom: 0.5rem; }
+        
+        .badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge.warning { background: #f59e0b; }
+        .badge.info { background: #6366f1; }
+        
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.75rem; }
+        }
+        
+        .print-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+        .print-btn:hover { background: #4f46e5; }
+        
+        @media print {
+            .print-btn { display: none; }
+            body { background: white; }
+            .section { box-shadow: none; border: 1px solid #e2e8f0; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🤖 SaaS de Bots WhatsApp</h1>
+            <p>Plan de Negocio y Arquitectura Técnica</p>
+            <div class="date">Febrero 2026 • Preparado por Jarvis para Sergio Durán</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- VISIÓN -->
+        <div class="section">
+            <h2>🎯 Visión del Producto</h2>
+            <p>Una plataforma donde cualquier negocio puede tener su propio "empleado virtual" en WhatsApp que:</p>
+            <ul>
+                <li><strong>Parece una persona real</strong> (no un bot robótico)</li>
+                <li><strong>Recuerda cada conversación</strong> y cada cliente</li>
+                <li><strong>Vende, atiende, agenda 24/7</strong></li>
+                <li><strong>Aprende del negocio</strong> del cliente</li>
+            </ul>
+            
+            <h3>Diferenciador vs Competencia</h3>
+            <table>
+                <tr>
+                    <th>Competidor</th>
+                    <th>Qué ofrece</th>
+                    <th>Limitación</th>
+                </tr>
+                <tr>
+                    <td>ManyChat</td>
+                    <td>Flujos predefinidos</td>
+                    <td>NO es IA real, solo "if/then"</td>
+                </tr>
+                <tr>
+                    <td>Tidio</td>
+                    <td>Chatbot básico</td>
+                    <td>Respuestas genéricas</td>
+                </tr>
+                <tr>
+                    <td>Chatbase</td>
+                    <td>IA pero web</td>
+                    <td>No WhatsApp nativo</td>
+                </tr>
+                <tr style="background: #f0fdf4;">
+                    <td><strong>Nuestro producto</strong></td>
+                    <td><strong>IA real + memoria + WhatsApp</strong></td>
+                    <td><span class="badge">Ninguna</span></td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- ARQUITECTURA -->
+        <div class="section">
+            <h2>🏗️ Arquitectura Técnica</h2>
+            
+            <h3>Nivel 1: Infraestructura Base</h3>
+            <div class="code-block">┌─────────────────────────────────────────────────────────┐
+│  SERVIDOR CENTRAL (EC2 o similar)                       │
+│  ├── Clawdbot Gateway (orquestador)                     │
+│  ├── Base de datos (PostgreSQL/SQLite)                  │
+│  └── API REST para Dashboard                            │
+└─────────────────────────────────────────────────────────┘</div>
+            
+            <h3>Nivel 2: Multi-Tenant (Un bot por cliente)</h3>
+            <div class="code-block">┌─────────────┐  ┌─────────────┐  ┌─────────────┐
+│ Cliente A   │  │ Cliente B   │  │ Cliente C   │
+│ Bot: Tienda │  │ Bot: Restau │  │ Bot: Doctor │
+│ WA: +52...  │  │ WA: +52...  │  │ WA: +52...  │
+│ Memoria: ✓  │  │ Memoria: ✓  │  │ Memoria: ✓  │
+└─────────────┘  └─────────────┘  └─────────────┘
+        │               │               │
+        └───────────────┼───────────────┘
+                        │
+              ┌─────────▼─────────┐
+              │  WhatsApp Business │
+              │       API          │
+              └────────────────────┘</div>
+            
+            <h3>Nivel 3: Sistema de Memoria (por bot)</h3>
+            <div class="code-block">/clientes/{cliente_id}/
+├── config.json          # Configuración del bot
+├── SOUL.md              # Personalidad/instrucciones
+├── MEMORY.md            # Memoria largo plazo
+├── knowledge/           # Base de conocimiento del negocio
+│   ├── productos.md
+│   ├── precios.md
+│   └── faq.md
+└── conversations/       # Historial por usuario
+    ├── user_5218111234.md
+    └── user_5218115678.md</div>
+        </div>
+        
+        <!-- COSTOS -->
+        <div class="section">
+            <h2>💰 Análisis de Costos</h2>
+            
+            <h3>Costos Fijos (Infraestructura)</h3>
+            <table>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Costo/mes</th>
+                    <th>Notas</th>
+                </tr>
+                <tr>
+                    <td>EC2 t3.medium</td>
+                    <td>$30-40</td>
+                    <td>Soporta ~100 bots</td>
+                </tr>
+                <tr>
+                    <td>EC2 t3.large</td>
+                    <td>$60-80</td>
+                    <td>Soporta ~500 bots</td>
+                </tr>
+                <tr>
+                    <td>Base de datos</td>
+                    <td>$0-20</td>
+                    <td>SQLite gratis, PostgreSQL ~$20</td>
+                </tr>
+                <tr>
+                    <td>Dominio + SSL</td>
+                    <td>$2</td>
+                    <td>Cloudflare gratis</td>
+                </tr>
+                <tr style="background: #f1f5f9; font-weight: 600;">
+                    <td>Total fijo</td>
+                    <td>$32-100</td>
+                    <td>Escala con clientes</td>
+                </tr>
+            </table>
+            
+            <h3>Costos Variables (Por bot/cliente)</h3>
+            <table>
+                <tr>
+                    <th>Concepto</th>
+                    <th>Costo</th>
+                    <th>Notas</th>
+                </tr>
+                <tr>
+                    <td>WhatsApp Business API</td>
+                    <td>$0.005-0.08/msg</td>
+                    <td>Depende del país</td>
+                </tr>
+                <tr>
+                    <td>Claude API (por mensaje)</td>
+                    <td>~$0.003-0.01</td>
+                    <td>Promedio</td>
+                </tr>
+                <tr>
+                    <td>Almacenamiento</td>
+                    <td>~$0.50/mes</td>
+                    <td>Por cliente</td>
+                </tr>
+                <tr style="background: #f1f5f9; font-weight: 600;">
+                    <td>Total por cliente</td>
+                    <td>~$5-15/mes</td>
+                    <td>Con uso moderado</td>
+                </tr>
+            </table>
+            
+            <div class="highlight">
+                <h3>📊 Proyección de Ganancias</h3>
+                <div class="grid-2">
+                    <div>
+                        <strong>100 clientes × $49</strong><br>
+                        Ingresos: $4,900<br>
+                        Costos: $1,050<br>
+                        <strong>Ganancia: $3,850/mes (78%)</strong>
+                    </div>
+                    <div>
+                        <strong>500 clientes × $49</strong><br>
+                        Ingresos: $24,500<br>
+                        Costos: $5,100<br>
+                        <strong>Ganancia: $19,400/mes (79%)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- OPTIMIZACIÓN -->
+        <div class="section">
+            <h2>⚡ Optimización de Costos</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>1. Caché de respuestas</h4>
+                    <p>FAQ del negocio → respuesta cacheada. No llama a Claude si ya sabe.</p>
+                    <span class="badge">Ahorro: 40-60%</span>
+                </div>
+                <div class="card">
+                    <h4>2. Modelos escalonados</h4>
+                    <p>Preguntas simples → Haiku. Complejas → Sonnet.</p>
+                    <span class="badge">Ahorro: 30-50%</span>
+                </div>
+                <div class="card">
+                    <h4>3. Compresión de contexto</h4>
+                    <p>Resumir conversaciones largas. Solo enviar lo relevante.</p>
+                    <span class="badge">Ahorro: 20-30%</span>
+                </div>
+                <div class="card">
+                    <h4>4. Rate limiting</h4>
+                    <p>Límite de mensajes por plan. Throttling en pico.</p>
+                    <span class="badge warning">Protección</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PRECIOS -->
+        <div class="section">
+            <h2>💵 Planes de Precio Sugeridos</h2>
+            <div class="grid-2">
+                <div class="price-card">
+                    <h4>Plan Starter</h4>
+                    <div class="price">$29</div>
+                    <div class="period">/mes</div>
+                    <ul>
+                        <li>1 bot / 1 número WhatsApp</li>
+                        <li>500 mensajes/mes</li>
+                        <li>Memoria básica</li>
+                        <li>Soporte por email</li>
+                    </ul>
+                </div>
+                <div class="price-card">
+                    <h4>Plan Pro</h4>
+                    <div class="price">$79</div>
+                    <div class="period">/mes</div>
+                    <ul>
+                        <li>1 bot / 1 número WhatsApp</li>
+                        <li>2,000 mensajes/mes</li>
+                        <li>Memoria completa</li>
+                        <li>Integraciones</li>
+                        <li>Soporte prioritario</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- STACK -->
+        <div class="section">
+            <h2>🛠️ Stack Tecnológico</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>Backend</h4>
+                    <p>Node.js + Fastify + PostgreSQL + Redis + BullMQ</p>
+                </div>
+                <div class="card">
+                    <h4>Frontend (Dashboard)</h4>
+                    <p>Next.js 14 + Tailwind + shadcn/ui + Clerk</p>
+                </div>
+                <div class="card">
+                    <h4>WhatsApp</h4>
+                    <p>Baileys (inicio) → WhatsApp Business API (escala)</p>
+                </div>
+                <div class="card">
+                    <h4>IA</h4>
+                    <p>Claude API + GPT-4o backup + OpenAI Embeddings</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ROADMAP -->
+        <div class="section">
+            <h2>🗓️ Roadmap de Desarrollo</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4><span class="badge info">Fase 1</span> MVP (2-3 semanas)</h4>
+                    <ul>
+                        <li>Semana 1: Estructura + WhatsApp básico + 1 bot de prueba</li>
+                        <li>Semana 2: Multi-tenant + Dashboard mínimo + Deploy</li>
+                        <li>Semana 3: Onboarding + Billing (Stripe) + 3-5 clientes beta</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4><span class="badge info">Fase 2</span> Producto (1-2 meses)</h4>
+                    <ul>
+                        <li>Dashboard completo + Analytics</li>
+                        <li>WhatsApp Business API oficial</li>
+                        <li>Integraciones (Calendar, Sheets)</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4><span class="badge info">Fase 3</span> Escala (3+ meses)</h4>
+                    <ul>
+                        <li>White-label + API pública</li>
+                        <li>Marketplace de templates</li>
+                        <li>Programa de afiliados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DASHBOARD -->
+        <div class="section">
+            <h2>📱 Dashboard - Funcionalidades</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>Para el Admin (tú)</h3>
+                    <ul>
+                        <li>Ver todos los clientes</li>
+                        <li>Métricas globales</li>
+                        <li>Gestión de planes/billing</li>
+                        <li>Logs y debugging</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Para el Cliente</h3>
+                    <ul>
+                        <li>Configurar su bot (nombre, personalidad)</li>
+                        <li>Subir base de conocimiento</li>
+                        <li>Ver conversaciones</li>
+                        <li>Métricas (mensajes, conversiones)</li>
+                        <li>Conectar WhatsApp</li>
+                        <li>Entrenar al bot</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- VIABILIDAD -->
+        <div class="section">
+            <h2>✅ Viabilidad - Conclusión</h2>
+            <div class="highlight">
+                <h3>¿Es viable? SÍ, 100%</h3>
+                <p>Mercado enorme, tecnología lista, márgenes altos (70-80%), escalable infinitamente.</p>
+            </div>
+            
+            <h3>Riesgos y Mitigación</h3>
+            <table>
+                <tr>
+                    <th>Riesgo</th>
+                    <th>Mitigación</th>
+                </tr>
+                <tr>
+                    <td>WhatsApp cambia políticas</td>
+                    <td>Múltiples canales (Telegram, Instagram)</td>
+                </tr>
+                <tr>
+                    <td>Dependencia de APIs</td>
+                    <td>Múltiples proveedores IA</td>
+                </tr>
+                <tr>
+                    <td>Soporte al cliente crece</td>
+                    <td>Automatizar con nuestros propios bots</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- SIGUIENTE PASO -->
+        <div class="section">
+            <h2>🚀 Siguiente Paso</h2>
+            <div class="highlight">
+                <h3>Recomendación: MVP rápido (1 semana)</h3>
+                <p>Crear 1 bot funcional para 1 cliente real de prueba. Validar, cobrar desde día 1, iterar basado en feedback.</p>
+            </div>
+            
+            <h3>Estructura de Proyecto Propuesta</h3>
+            <div class="code-block">/whatsapp-saas/
+├── apps/
+│   ├── api/              # Backend API
+│   ├── dashboard/        # Frontend Next.js
+│   └── worker/           # Procesador de mensajes
+├── packages/
+│   ├── database/         # Prisma schemas
+│   ├── ai/               # Lógica de IA
+│   └── whatsapp/         # Integración WA
+├── docker-compose.yml
+└── README.md</div>
+        </div>
+    </div>
+    
+    <button class="print-btn" onclick="window.print()">📄 Imprimir / PDF</button>
+</body>
+</html>

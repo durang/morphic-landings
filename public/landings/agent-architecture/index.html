@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura Multi-Agente + Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0f172a; 
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        header p { font-size: 1.25rem; opacity: 0.9; }
+        header .badge { 
+            display: inline-block; 
+            background: rgba(255,255,255,0.2); 
+            padding: 0.5rem 1rem; 
+            border-radius: 100px; 
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+        
+        .section {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            margin: 2rem 0 1rem;
+        }
+        
+        p { margin-bottom: 1rem; color: #94a3b8; }
+        
+        ul, ol { margin: 1rem 0; padding-left: 1.5rem; }
+        li { margin-bottom: 0.5rem; color: #94a3b8; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th { background: #0f172a; font-weight: 600; color: #a5b4fc; }
+        td { color: #cbd5e1; }
+        tr:hover { background: rgba(99, 102, 241, 0.1); }
+        
+        .code-block {
+            background: #0f172a;
+            color: #a5b4fc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            white-space: pre;
+            border: 1px solid #334155;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+        .highlight h3 { color: white; margin-top: 0; }
+        .highlight p { color: rgba(255,255,255,0.9); }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+        }
+        .card h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 0.75rem;
+        }
+        .card p { font-size: 0.9rem; margin: 0; }
+        .card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge.green { background: #10b981; color: white; }
+        .badge.yellow { background: #f59e0b; color: black; }
+        .badge.red { background: #ef4444; color: white; }
+        .badge.blue { background: #6366f1; color: white; }
+        
+        .comparison-winner {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+        }
+        
+        .architecture-diagram {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        .architecture-diagram pre {
+            color: #a5b4fc;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            text-align: left;
+            display: inline-block;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #6366f1;
+        }
+        .timeline-item {
+            position: relative;
+            padding: 1rem 0 1.5rem 1rem;
+            border-left: none;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 1.25rem;
+            width: 14px;
+            height: 14px;
+            background: #6366f1;
+            border-radius: 50%;
+            transform: translateX(-6px);
+            box-shadow: 0 0 0 4px #1e293b;
+        }
+        .timeline-item h4 { color: #f8fafc; margin-bottom: 0.5rem; }
+        .timeline-item ul { margin-top: 0.5rem; }
+        
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .pros { border-left: 3px solid #10b981; padding-left: 1rem; }
+        .cons { border-left: 3px solid #ef4444; padding-left: 1rem; }
+        .pros h4 { color: #10b981; }
+        .cons h4 { color: #ef4444; }
+        
+        .decision-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .decision-box h3 { color: white; font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .decision-box p { color: rgba(255,255,255,0.9); font-size: 1.1rem; margin: 0; }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+            header h1 { font-size: 2rem; }
+        }
+        
+        .print-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            z-index: 100;
+        }
+        .print-btn:hover { background: #4f46e5; }
+        
+        @media print {
+            .print-btn { display: none; }
+            body { background: white; color: #1e293b; }
+            .section { background: #f8fafc; border: 1px solid #e2e8f0; }
+            .card { background: white; }
+            .code-block { background: #f1f5f9; color: #1e293b; }
+            header { background: #1e293b; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🤖 Arquitectura Multi-Agente</h1>
+        <p>Sistema de Agentes + Dashboard de Gestión</p>
+        <div class="badge">Febrero 2026 • Jarvis para Sergio Durán</div>
+    </header>
+    
+    <div class="container">
+        
+        <!-- VISIÓN GENERAL -->
+        <div class="section">
+            <h2>🎯 Visión General</h2>
+            <p>Un sistema donde puedas crear, gestionar y desplegar múltiples agentes de IA especializados, cada uno con su propia personalidad, memoria y canal de comunicación.</p>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <div class="icon">🧠</div>
+                    <h4>Agentes Especializados</h4>
+                    <p>Cada agente tiene un propósito específico: ventas, soporte, research, etc.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">💾</div>
+                    <h4>Memoria Persistente</h4>
+                    <p>Cada agente recuerda conversaciones y aprende del contexto.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🎛️</div>
+                    <h4>Dashboard Central</h4>
+                    <p>Crear, modificar y monitorear agentes desde una interfaz web.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ARQUITECTURA -->
+        <div class="section">
+            <h2>🏗️ Arquitectura del Sistema</h2>
+            
+            <h3>Nivel 1: Core (Orquestador)</h3>
+            <div class="architecture-diagram">
+                <pre>
+┌─────────────────────────────────────────────────────────────┐
+│                    JARVIS (ORQUESTADOR)                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │  Agent      │  │  Memory     │  │  Channel            │  │
+│  │  Manager    │  │  System     │  │  Router             │  │
+│  │             │  │             │  │                     │  │
+│  │ • Crear     │  │ • MEMORY.md │  │ • WhatsApp          │  │
+│  │ • Eliminar  │  │ • Diarios   │  │ • Telegram          │  │
+│  │ • Pausar    │  │ • Por user  │  │ • Web Widget        │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+│                                                             │
+│                    Clawdbot Gateway                         │
+└─────────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+            
+            <h3>Nivel 2: Sub-Agentes</h3>
+            <div class="architecture-diagram">
+                <pre>
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│   SALES_AGENT    │  │  SUPPORT_AGENT   │  │  RESEARCH_AGENT  │
+│                  │  │                  │  │                  │
+│  SOUL.md:        │  │  SOUL.md:        │  │  SOUL.md:        │
+│  "Vendedor       │  │  "Agente de      │  │  "Investigador   │
+│   amigable,      │  │   soporte        │  │   analítico,     │
+│   cierra ventas" │  │   paciente"      │  │   genera reportes"│
+│                  │  │                  │  │                  │
+│  Canal: WhatsApp │  │  Canal: Widget   │  │  Canal: Internal │
+│  Memoria: ✓      │  │  Memoria: ✓      │  │  Memoria: ✓      │
+└──────────────────┘  └──────────────────┘  └──────────────────┘
+         │                    │                     │
+         └────────────────────┼─────────────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │     DASHBOARD     │
+                    │   (Control Panel) │
+                    └───────────────────┘
+                </pre>
+            </div>
+            
+            <h3>Nivel 3: Estructura de Archivos por Agente</h3>
+            <div class="code-block">/agents/{agent_id}/
+├── config.json           # Configuración técnica
+│   {
+│     "id": "sales_bot_001",
+│     "name": "Vendedor Virtual",
+│     "model": "claude-3-sonnet",
+│     "channel": "whatsapp",
+│     "phone": "+521234567890",
+│     "active": true,
+│     "limits": {
+│       "messages_per_day": 500,
+│       "context_tokens": 8000
+│     }
+│   }
+│
+├── SOUL.md               # Personalidad e instrucciones
+│   "Eres un vendedor amigable de [Negocio].
+│    Tu objetivo es ayudar al cliente a encontrar
+│    el producto perfecto y cerrar la venta..."
+│
+├── MEMORY.md             # Memoria de largo plazo
+│   "## Clientes Importantes
+│    - Juan: Le gusta el producto X, presupuesto $500
+│    - María: Preguntó por servicio Y el 15 de enero..."
+│
+├── knowledge/            # Base de conocimiento
+│   ├── productos.md
+│   ├── precios.md
+│   ├── faq.md
+│   └── politicas.md
+│
+└── conversations/        # Historial por usuario
+    ├── user_+521111111.json
+    └── user_+522222222.json</div>
+        </div>
+        
+        <!-- COMPARATIVA FRAMEWORKS -->
+        <div class="section">
+            <h2>📚 Comparativa de Frameworks</h2>
+            <p>Existen varios frameworks para construir sistemas multi-agente. Aquí está mi análisis:</p>
+            
+            <table>
+                <tr>
+                    <th>Framework</th>
+                    <th>Descripción</th>
+                    <th>Pros</th>
+                    <th>Contras</th>
+                    <th>Veredicto</th>
+                </tr>
+                <tr>
+                    <td><strong>LangGraph</strong></td>
+                    <td>Grafos de agentes con estados</td>
+                    <td>Muy flexible, control total</td>
+                    <td>Curva de aprendizaje alta</td>
+                    <td><span class="badge yellow">Avanzado</span></td>
+                </tr>
+                <tr>
+                    <td><strong>CrewAI</strong></td>
+                    <td>Equipos de agentes colaborativos</td>
+                    <td>Fácil de usar, buena documentación</td>
+                    <td>Menos control granular</td>
+                    <td><span class="badge green">Recomendado</span></td>
+                </tr>
+                <tr>
+                    <td><strong>AutoGen</strong> (Microsoft)</td>
+                    <td>Conversaciones multi-agente</td>
+                    <td>Robusto, bien probado</td>
+                    <td>Pesado, complejo</td>
+                    <td><span class="badge yellow">Enterprise</span></td>
+                </tr>
+                <tr class="comparison-winner">
+                    <td><strong>Custom + Clawdbot</strong></td>
+                    <td>Construido sobre lo que ya tenemos</td>
+                    <td>Control total, ya integrado, conocemos el código</td>
+                    <td>Más trabajo inicial</td>
+                    <td><span class="badge blue">MI ELECCIÓN</span></td>
+                </tr>
+            </table>
+            
+            <div class="highlight">
+                <h3>🏆 Recomendación: Custom + Clawdbot</h3>
+                <p>Ya tienes Clawdbot funcionando. Construir encima de eso te da control total, evita dependencias externas, y ya conocemos cómo funciona. Los frameworks como LangGraph o CrewAI añaden complejidad innecesaria para tu caso de uso.</p>
+            </div>
+        </div>
+        
+        <!-- DASHBOARD -->
+        <div class="section">
+            <h2>🎛️ Dashboard de Agentes</h2>
+            
+            <h3>Funcionalidades Principales</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📋 Lista de Agentes</h4>
+                    <ul>
+                        <li>Ver todos los agentes activos/pausados</li>
+                        <li>Estado en tiempo real (online/offline)</li>
+                        <li>Métricas rápidas (mensajes hoy, conversiones)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>➕ Crear Agente</h4>
+                    <ul>
+                        <li>Wizard paso a paso</li>
+                        <li>Elegir canal (WhatsApp, Telegram, Web)</li>
+                        <li>Definir personalidad (SOUL.md)</li>
+                        <li>Subir base de conocimiento</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>✏️ Editar Agente</h4>
+                    <ul>
+                        <li>Modificar personalidad en caliente</li>
+                        <li>Actualizar conocimiento</li>
+                        <li>Cambiar límites de mensajes</li>
+                        <li>Pausar/Reactivar</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>💬 Ver Conversaciones</h4>
+                    <ul>
+                        <li>Historial completo por usuario</li>
+                        <li>Buscar por texto/fecha</li>
+                        <li>Intervenir manualmente si es necesario</li>
+                        <li>Marcar conversaciones importantes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Analytics</h4>
+                    <ul>
+                        <li>Mensajes por día/semana/mes</li>
+                        <li>Tiempo de respuesta promedio</li>
+                        <li>Satisfacción del usuario</li>
+                        <li>Temas más frecuentes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🧠 Entrenamiento</h4>
+                    <ul>
+                        <li>Ver respuestas incorrectas</li>
+                        <li>Corregir y guardar para futuro</li>
+                        <li>Añadir ejemplos de conversación</li>
+                        <li>Mejorar MEMORY.md automáticamente</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Mockup Visual del Dashboard</h3>
+            <div class="code-block">
+┌────────────────────────────────────────────────────────────────────────┐
+│  🤖 Agent Dashboard                              [+ Nuevo Agente]      │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐        │
+│  │ 🟢 Sales Bot    │  │ 🟢 Support Bot  │  │ 🔴 Research Bot │        │
+│  │ WhatsApp        │  │ Web Widget      │  │ Internal        │        │
+│  │ 234 msgs hoy    │  │ 89 msgs hoy     │  │ Pausado         │        │
+│  │ [Editar] [Ver]  │  │ [Editar] [Ver]  │  │ [Activar]       │        │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘        │
+│                                                                        │
+│  ─────────────────────────────────────────────────────────────         │
+│                                                                        │
+│  📊 Métricas Globales (Hoy)                                            │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐               │
+│  │   323    │  │  2.3s    │  │   89%    │  │   12     │               │
+│  │ Mensajes │  │ Resp Avg │  │ Satisf.  │  │ Ventas   │               │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘               │
+│                                                                        │
+│  ─────────────────────────────────────────────────────────────         │
+│                                                                        │
+│  💬 Conversaciones Recientes                                           │
+│  ┌────────────────────────────────────────────────────────────┐       │
+│  │ 👤 +52 811 234 5678 • Sales Bot • Hace 2 min               │       │
+│  │ "¿Cuánto cuesta el plan premium?"                          │       │
+│  │ → "El plan premium tiene un costo de $99/mes e incluye..." │       │
+│  └────────────────────────────────────────────────────────────┘       │
+│  ┌────────────────────────────────────────────────────────────┐       │
+│  │ 👤 +52 833 987 6543 • Support Bot • Hace 5 min             │       │
+│  │ "No puedo acceder a mi cuenta"                             │       │
+│  │ → "Entiendo tu frustración. Vamos a resolverlo juntos..." │       │
+│  └────────────────────────────────────────────────────────────┘       │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+            </div>
+        </div>
+        
+        <!-- STACK TECNOLÓGICO -->
+        <div class="section">
+            <h2>🛠️ Stack Tecnológico Recomendado</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>Backend (API + Workers)</h4>
+                    <ul>
+                        <li><strong>Runtime:</strong> Node.js 20+</li>
+                        <li><strong>Framework:</strong> Fastify (rápido, eficiente)</li>
+                        <li><strong>Base de datos:</strong> PostgreSQL + Prisma ORM</li>
+                        <li><strong>Cache:</strong> Redis</li>
+                        <li><strong>Queue:</strong> BullMQ (procesar mensajes)</li>
+                        <li><strong>Clawdbot:</strong> Como base de agentes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Frontend (Dashboard)</h4>
+                    <ul>
+                        <li><strong>Framework:</strong> Next.js 14 (App Router)</li>
+                        <li><strong>UI:</strong> Tailwind CSS + shadcn/ui</li>
+                        <li><strong>Estado:</strong> Zustand o React Query</li>
+                        <li><strong>Auth:</strong> Clerk o NextAuth</li>
+                        <li><strong>Charts:</strong> Recharts</li>
+                        <li><strong>Real-time:</strong> Socket.io</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Infraestructura</h4>
+                    <ul>
+                        <li><strong>Hosting Backend:</strong> AWS EC2 o Railway</li>
+                        <li><strong>Hosting Frontend:</strong> Vercel (gratis)</li>
+                        <li><strong>Database:</strong> Supabase o PlanetScale</li>
+                        <li><strong>Files:</strong> S3 o Cloudflare R2</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>Integraciones</h4>
+                    <ul>
+                        <li><strong>WhatsApp:</strong> Baileys → WA Business API</li>
+                        <li><strong>Telegram:</strong> Bot API (ya configurado)</li>
+                        <li><strong>IA:</strong> Claude API + GPT-4 backup</li>
+                        <li><strong>Pagos:</strong> Stripe</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ROADMAP -->
+        <div class="section">
+            <h2>🗓️ Roadmap de Desarrollo</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>📍 Fase 1: Fundación (Semana 1-2)</h4>
+                    <ul>
+                        <li>Definir estructura de archivos por agente</li>
+                        <li>Crear sistema de templates (SOUL.md base)</li>
+                        <li>API básica: CRUD de agentes</li>
+                        <li>1 agente de prueba funcionando</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>📍 Fase 2: Dashboard MVP (Semana 3-4)</h4>
+                    <ul>
+                        <li>UI: Lista de agentes</li>
+                        <li>UI: Crear/Editar agente</li>
+                        <li>UI: Ver conversaciones</li>
+                        <li>Conectar con API</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>📍 Fase 3: Multi-Canal (Semana 5-6)</h4>
+                    <ul>
+                        <li>Integrar WhatsApp (Baileys)</li>
+                        <li>Web Widget embebible</li>
+                        <li>Router de canales</li>
+                    </ul>
+                </div>
+                <div class="timeline-item">
+                    <h4>📍 Fase 4: Analytics + Polish (Semana 7-8)</h4>
+                    <ul>
+                        <li>Dashboard de métricas</li>
+                        <li>Sistema de entrenamiento/corrección</li>
+                        <li>Alertas y notificaciones</li>
+                        <li>Documentación</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESTIMACIÓN DE ESFUERZO -->
+        <div class="section">
+            <h2>⏱️ Estimación de Esfuerzo</h2>
+            
+            <table>
+                <tr>
+                    <th>Componente</th>
+                    <th>Tiempo Estimado</th>
+                    <th>Complejidad</th>
+                </tr>
+                <tr>
+                    <td>Sistema de agentes (backend)</td>
+                    <td>1-2 semanas</td>
+                    <td><span class="badge yellow">Media</span></td>
+                </tr>
+                <tr>
+                    <td>Dashboard UI básico</td>
+                    <td>1-2 semanas</td>
+                    <td><span class="badge yellow">Media</span></td>
+                </tr>
+                <tr>
+                    <td>Integración WhatsApp</td>
+                    <td>1 semana</td>
+                    <td><span class="badge yellow">Media</span></td>
+                </tr>
+                <tr>
+                    <td>Sistema de memoria</td>
+                    <td>3-5 días</td>
+                    <td><span class="badge green">Baja</span></td>
+                </tr>
+                <tr>
+                    <td>Analytics básico</td>
+                    <td>1 semana</td>
+                    <td><span class="badge green">Baja</span></td>
+                </tr>
+                <tr style="background: rgba(99, 102, 241, 0.1);">
+                    <td><strong>Total MVP funcional</strong></td>
+                    <td><strong>4-6 semanas</strong></td>
+                    <td></td>
+                </tr>
+            </table>
+            
+            <p><strong>Nota:</strong> Esto asume trabajo dedicado. Si es en tiempo parcial, multiplicar por 1.5-2x.</p>
+        </div>
+        
+        <!-- DECISIÓN FINAL -->
+        <div class="decision-box">
+            <h3>✅ Mi Recomendación Final</h3>
+            <p>Construir custom sobre Clawdbot. Empezar con 1 agente funcional, luego Dashboard, luego escalar.</p>
+        </div>
+        
+        <!-- SIGUIENTE PASO -->
+        <div class="section">
+            <h2>🚀 Siguiente Paso Concreto</h2>
+            <p>Si quieres empezar AHORA, esto es lo primero que haría:</p>
+            
+            <div class="code-block">
+1. Crear carpeta /agents/ con estructura base
+2. Definir config.json schema
+3. Crear primer SOUL.md template
+4. Conectar un número WhatsApp de prueba
+5. Probar con 1 agente respondiendo mensajes
+            </div>
+            
+            <p><strong>¿Quieres que empiece a construir esto?</strong></p>
+        </div>
+        
+    </div>
+    
+    <button class="print-btn" onclick="window.print()">📄 Imprimir / PDF</button>
+</body>
+</html>
