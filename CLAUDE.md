@@ -19,7 +19,7 @@
 |---------|-----------|----|
 | **Morphic Landings (this)** | Static marketing pages | None |
 | Morphic Labs | AI platform with mini-apps | Neon Postgres |
-| Clawdex | WhatsApp chatbot SaaS | Supabase ffvkicucqjvsodsgmfmw |
+| Clawdex Platform | WhatsApp chatbot SaaS | Supabase ffvkicucqjvsodsgmfmw |
 | SD Command | Agent dashboard | Supabase hclkqjyzhvasucziyayl |
 | PDF Spy | Document intelligence | None |
 
