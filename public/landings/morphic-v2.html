@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morphic Labs — Research de Longevidad que Funciona</title>
+  <meta name="description" content="Investigación de salud y longevidad basada en ciencia real. No más datos sin contexto. Acción real para vivir más y mejor.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --cyan: #00FFFF;
+      --cyan-dark: #00B4B4;
+      --magenta: #FF00FF;
+      --black: #0a0a0f;
+      --gray-dark: #1a1a2e;
+      --gray: #6b7280;
+      --white: #ffffff;
+    }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* Utility */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 768px) { .container { padding: 0 32px; } }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--magenta) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .glow { text-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+    
+    /* Navbar */
+    nav {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      height: 56px;
+      background: rgba(10, 10, 15, 0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      border-radius: 12px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+    
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+    
+    .nav-cta {
+      padding: 10px 20px;
+      background: var(--cyan);
+      color: var(--black);
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .nav-cta:hover {
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      transform: translateY(-1px);
+    }
+    
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 16px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(0, 255, 255, 0.1);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 50px;
+      font-size: 0.875rem;
+      color: var(--cyan);
+      margin-bottom: 24px;
+    }
+    
+    .hero-badge::before {
+      content: '🧬';
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+    
+    .hero p {
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+      color: var(--gray);
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+    
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dark) 100%);
+      color: var(--black);
+      font-size: 1.125rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+    }
+    
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 60px;
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    @media (min-width: 768px) {
+      .stats { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    }
+    
+    .stat {
+      padding: 24px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--gray);
+    }
+    
+    /* Problem Section */
+    .problem {
+      padding: 100px 16px;
+      background: linear-gradient(180deg, var(--black) 0%, var(--gray-dark) 100%);
+    }
+    
+    .problem h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .problem-grid {
+      display: grid;
+      gap: 24px;
+    }
+    
+    @media (min-width: 768px) {
+      .problem-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    
+    .problem-card {
+      padding: 32px 24px;
+      background: rgba(10, 10, 15, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      text-align: center;
+    }
+    
+    .problem-card-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+    
+    .problem-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .problem-card p {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+    
+    /* Solution */
+    .solution {
+      padding: 100px 16px;
+      background: var(--black);
+    }
+    
+    .solution h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .solution > .container > p {
+      text-align: center;
+      color: var(--gray);
+      max-width: 640px;
+      margin: 0 auto 60px;
+      font-size: 1.125rem;
+    }
+    
+    .features {
+      display: grid;
+      gap: 24px;
+    }
+    
+    @media (min-width: 768px) {
+      .features { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    .feature {
+      display: flex;
+      gap: 20px;
+      padding: 28px;
+      background: linear-gradient(135deg, var(--gray-dark) 0%, rgba(26, 26, 46, 0.5) 100%);
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      border-radius: 16px;
+      transition: all 0.3s;
+    }
+    
+    .feature:hover {
+      border-color: rgba(0, 255, 255, 0.3);
+      transform: translateY(-4px);
+    }
+    
+    .feature-number {
+      width: 48px;
+      height: 48px;
+      background: rgba(0, 255, 255, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--cyan);
+      flex-shrink: 0;
+    }
+    
+    .feature h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .feature p {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+    
+    /* Comparison */
+    .comparison {
+      padding: 100px 16px;
+      background: linear-gradient(180deg, var(--black) 0%, var(--gray-dark) 50%, var(--black) 100%);
+    }
+    
+    .comparison h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .comparison-table {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      background: rgba(10, 10, 15, 0.9);
+    }
+    
+    th, td {
+      padding: 20px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    th {
+      background: rgba(0, 255, 255, 0.05);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--cyan);
+    }
+    
+    td { font-size: 0.95rem; }
+    
+    .highlight-row {
+      background: rgba(0, 255, 255, 0.08);
+    }
+    
+    .highlight-row td:first-child {
+      color: var(--cyan);
+      font-weight: 600;
+    }
+    
+    .check { color: #10b981; }
+    .cross { color: #ef4444; }
+    
+    /* Market */
+    .market {
+      padding: 100px 16px;
+      background: var(--black);
+      text-align: center;
+    }
+    
+    .market h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .market > .container > p {
+      color: var(--gray);
+      max-width: 640px;
+      margin: 0 auto 50px;
+      font-size: 1.125rem;
+    }
+    
+    .market-stats {
+      display: grid;
+      gap: 24px;
+      margin-bottom: 50px;
+    }
+    
+    @media (min-width: 768px) {
+      .market-stats { grid-template-columns: repeat(3, 1fr); }
+    }
+    
+    .market-stat {
+      padding: 32px 24px;
+      background: linear-gradient(135deg, var(--gray-dark) 0%, rgba(26, 26, 46, 0.3) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+    }
+    
+    .market-stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    
+    .market-stat-label {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+    
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 16px;
+      background: linear-gradient(180deg, var(--gray-dark) 0%, var(--black) 100%);
+      text-align: center;
+    }
+    
+    .cta-section h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .cta-section p {
+      color: var(--gray);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      font-size: 1.125rem;
+    }
+    
+    .cta-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    @media (min-width: 768px) {
+      .cta-form {
+        flex-direction: row;
+        max-width: 500px;
+      }
+    }
+    
+    .cta-form input {
+      flex: 1;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: var(--white);
+      font-size: 1rem;
+    }
+    
+    .cta-form input::placeholder { color: var(--gray); }
+    
+    .cta-form input:focus {
+      outline: none;
+      border-color: var(--cyan);
+    }
+    
+    .cta-form button {
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--cyan-dark) 100%);
+      color: var(--black);
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    
+    .cta-form button:hover {
+      box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
+    }
+    
+    /* Footer */
+    footer {
+      padding: 40px 16px;
+      background: var(--black);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.875rem;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate { animation: fadeInUp 0.6s ease forwards; }
+  </style>
+</head>
+<body>
+  
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">🧬 Morphic Labs</div>
+    <button class="nav-cta">Acceso Anticipado</button>
+  </nav>
+  
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container" style="display: flex; flex-direction: column; align-items: center;">
+      <span class="hero-badge">Research de Longevidad</span>
+      <h1>No más datos sin <span class="gradient-text">acción</span>.</h1>
+      <p>Investigación de salud y longevidad basada en ciencia real. Te decimos exactamente QUÉ hacer para vivir más años con más vida.</p>
+      <button class="hero-cta">Únete a la Lista de Espera →</button>
+      
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">$785B</div>
+          <div class="stat-label">Mercado 2024</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">8.2%</div>
+          <div class="stat-label">Crecimiento Anual</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">2.1B</div>
+          <div class="stat-label">Personas 60+ en 2050</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">100+</div>
+          <div class="stat-label">Biomarcadores</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Problem -->
+  <section class="problem">
+    <div class="container">
+      <h2>El problema con los <span class="gradient-text">wearables</span></h2>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-card-icon">📊</div>
+          <h3>Datos sin contexto</h3>
+          <p>Tu reloj te dice que dormiste 7 horas, pero no si fue sueño reparador ni qué hacer para mejorarlo.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">🤷</div>
+          <h3>Sin acción clara</h3>
+          <p>Sabes tu HRV, VO2max, pasos... pero ¿qué significa? ¿Qué debes cambiar HOY?</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">💸</div>
+          <h3>Tests caros, poca guía</h3>
+          <p>Pagas $500-$1500/año por análisis de sangre que te dejan con más preguntas que respuestas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Solution -->
+  <section class="solution">
+    <div class="container">
+      <h2>Research que <span class="gradient-text">sí funciona</span></h2>
+      <p>Morphic Labs combina tu data real con ciencia de longevidad para darte recomendaciones específicas.</p>
+      
+      <div class="features">
+        <div class="feature">
+          <div class="feature-number">1</div>
+          <div>
+            <h3>Análisis Integrado</h3>
+            <p>Conectamos tus wearables, análisis de sangre y genómica en una sola vista.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-number">2</div>
+          <div>
+            <h3>Recomendaciones Accionables</h3>
+            <p>No solo qué está mal — exactamente qué hacer esta semana para mejorarlo.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-number">3</div>
+          <div>
+            <h3>Tracking de Progreso</h3>
+            <p>Ve cómo cada cambio impacta tus biomarcadores en tiempo real.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-number">4</div>
+          <div>
+            <h3>Ciencia Actualizada</h3>
+            <p>Research constante de papers y estudios de longevidad aplicados a tu perfil.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Comparison -->
+  <section class="comparison">
+    <div class="container">
+      <h2>¿Por qué <span class="gradient-text">Morphic Labs</span>?</h2>
+      
+      <div class="comparison-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>InsideTracker</th>
+              <th>Function Health</th>
+              <th>Morphic Labs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Precio anual</td>
+              <td>$1,305+</td>
+              <td>$499+</td>
+              <td class="gradient-text">$99/mes</td>
+            </tr>
+            <tr>
+              <td>Análisis de sangre</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td>Integración wearables</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr class="highlight-row">
+              <td>Recomendaciones accionables</td>
+              <td>Limitadas</td>
+              <td>Limitadas</td>
+              <td><span class="check">✓ Personalizadas</span></td>
+            </tr>
+            <tr class="highlight-row">
+              <td>Research continuo</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓ Semanal</span></td>
+            </tr>
+            <tr>
+              <td>Plan de acción semanal</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Market -->
+  <section class="market">
+    <div class="container">
+      <h2>El mercado de <span class="gradient-text">longevidad</span> está explotando</h2>
+      <p>La gente ya no quiere solo vivir más. Quiere vivir MEJOR. Y está dispuesta a pagar por ello.</p>
+      
+      <div class="market-stats">
+        <div class="market-stat">
+          <div class="market-stat-value gradient-text">$1.87T</div>
+          <div class="market-stat-label">Proyección del mercado para 2034</div>
+        </div>
+        <div class="market-stat">
+          <div class="market-stat-value gradient-text">138%</div>
+          <div class="market-stat-label">Crecimiento en 10 años</div>
+        </div>
+        <div class="market-stat">
+          <div class="market-stat-value gradient-text">1B+</div>
+          <div class="market-stat-label">Personas buscan optimizar su salud</div>
+        </div>
+      </div>
+      
+      <button class="hero-cta">Únete Ahora — Acceso Anticipado →</button>
+    </div>
+  </section>
+  
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>¿Listo para <span class="gradient-text">optimizar</span> tu vida?</h2>
+      <p>Únete a la lista de espera y sé de los primeros en acceder a Morphic Labs.</p>
+      
+      <form class="cta-form" onsubmit="event.preventDefault(); alert('¡Gracias! Te contactaremos pronto.');">
+        <input type="email" placeholder="tu@email.com" required>
+        <button type="submit">Unirme →</button>
+      </form>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2026 Morphic Labs. Research de longevidad para humanos ambiciosos.</p>
+    </div>
+  </footer>
+  
+</body>
+</html>
