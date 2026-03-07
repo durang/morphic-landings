@@ -59,6 +59,44 @@
             max-width: 600px;
         }
 
+        /* Audio Section */
+        .audio-section {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent);
+            border: 1px solid var(--accent2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .audio-section h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--accent2);
+        }
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .audio-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .audio-item h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .audio-item audio {
+            width: 100%;
+            height: 40px;
+        }
+        audio::-webkit-media-controls-panel {
+            background: var(--bg-card);
+        }
+
         /* TOC */
         .toc {
             background: var(--bg-card);
@@ -368,6 +406,49 @@
         <h1>Domina <span>Claude Code</span> de Cero a Experto</h1>
         <p class="subtitle">Todo lo que necesitas saber sobre Hooks, MCP, Computer Use, Skills, y cómo crear agentes autónomos.</p>
     </header>
+
+    <!-- Audio Masterclass -->
+    <div class="audio-section">
+        <h3>🎧 Masterclass en Audio — Escucha y Aprende</h3>
+        <div class="audio-grid">
+            <div class="audio-item">
+                <h4>📚 1. Introducción General</h4>
+                <audio controls preload="none">
+                    <source src="/landings/audio/01-introduccion.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            <div class="audio-item">
+                <h4>🪝 2. Hooks (Automatización)</h4>
+                <audio controls preload="none">
+                    <source src="/landings/audio/02-hooks.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            <div class="audio-item">
+                <h4>🖥️ 3. Computer Use</h4>
+                <audio controls preload="none">
+                    <source src="/landings/audio/03-computer-use.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            <div class="audio-item">
+                <h4>🔌 4. MCP (Plugins)</h4>
+                <audio controls preload="none">
+                    <source src="/landings/audio/04-mcp.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            <div class="audio-item">
+                <h4>🎯 5. Casos para TUS Negocios</h4>
+                <audio controls preload="none">
+                    <source src="/landings/audio/05-casos-uso.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+            <div class="audio-item">
+                <h4>🚀 6. Plan de Acción</h4>
+                <audio controls preload="none">
+                    <source src="/landings/audio/06-plan-accion.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+    </div>
 
     <!-- TOC -->
     <nav class="toc">
