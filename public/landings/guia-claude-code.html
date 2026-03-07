@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Guía Completa: Claude Code, Hooks, MCP y Computer Use</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --accent: #a855f7;
+            --accent2: #22c55e;
+            --blue: #3b82f6;
+            --orange: #f59e0b;
+            --text: #fff;
+            --text-dim: #94a3b8;
+            --border: rgba(168, 85, 247, 0.2);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header */
+        header {
+            padding: 60px 0 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 60px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--accent);
+            border-radius: 100px;
+            font-size: 12px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-dim);
+            max-width: 600px;
+        }
+
+        /* TOC */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 60px;
+        }
+        .toc h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        .toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dim);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .toc-item:hover {
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--text);
+        }
+        .toc-num {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Section */
+        section {
+            margin-bottom: 80px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .section-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent), var(--blue));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        h2 {
+            font-size: 28px;
+            font-weight: 800;
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 30px 0 16px;
+            color: var(--accent2);
+        }
+        p {
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+        strong {
+            color: var(--text);
+        }
+
+        /* Code */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(168, 85, 247, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: var(--accent);
+        }
+        pre {
+            background: #1a1a24;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text);
+        }
+        .code-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+        }
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+        .card h4 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .card p {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 30px 0;
+        }
+        @media (max-width: 768px) {
+            .comparison { grid-template-columns: 1fr; }
+        }
+        .compare-box {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 28px;
+            border: 2px solid var(--border);
+        }
+        .compare-box.claude {
+            border-color: var(--accent);
+        }
+        .compare-box.clawdbot {
+            border-color: var(--accent2);
+        }
+        .compare-box h4 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .compare-box ul {
+            list-style: none;
+        }
+        .compare-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+        .compare-box li:last-child {
+            border: none;
+        }
+
+        /* Steps */
+        .steps {
+            counter-reset: step;
+            margin: 30px 0;
+        }
+        .step {
+            position: relative;
+            padding-left: 70px;
+            padding-bottom: 40px;
+            border-left: 2px solid var(--border);
+            margin-left: 20px;
+        }
+        .step:last-child {
+            border: none;
+            padding-bottom: 0;
+        }
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: -21px;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+        .step h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .step p {
+            font-size: 15px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        td {
+            font-size: 14px;
+            color: var(--text-dim);
+        }
+
+        /* Links */
+        .links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .link:hover {
+            border-color: var(--accent);
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        /* Alert */
+        .alert {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--accent2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--orange);
+        }
+        .alert p {
+            margin: 0;
+            color: var(--text);
+        }
+
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+        footer p {
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="badge">📚 Guía de Aprendizaje</div>
+        <h1>Domina <span>Claude Code</span> de Cero a Experto</h1>
+        <p class="subtitle">Todo lo que necesitas saber sobre Hooks, MCP, Computer Use, Skills, y cómo crear agentes autónomos.</p>
+    </header>
+
+    <!-- TOC -->
+    <nav class="toc">
+        <h3>Contenido</h3>
+        <div class="toc-list">
+            <a href="#diferencias" class="toc-item">
+                <span class="toc-num">1</span>
+                Claude Code vs Clawdbot
+            </a>
+            <a href="#instalacion" class="toc-item">
+                <span class="toc-num">2</span>
+                Instalación
+            </a>
+            <a href="#hooks" class="toc-item">
+                <span class="toc-num">3</span>
+                Hooks
+            </a>
+            <a href="#skills" class="toc-item">
+                <span class="toc-num">4</span>
+                Skills
+            </a>
+            <a href="#computer-use" class="toc-item">
+                <span class="toc-num">5</span>
+                Computer Use
+            </a>
+            <a href="#mcp" class="toc-item">
+                <span class="toc-num">6</span>
+                MCP
+            </a>
+            <a href="#roadmap" class="toc-item">
+                <span class="toc-num">7</span>
+                Roadmap de Aprendizaje
+            </a>
+        </div>
+    </nav>
+
+    <!-- Section 1: Diferencias -->
+    <section id="diferencias">
+        <div class="section-header">
+            <div class="section-icon">⚔️</div>
+            <h2>Claude Code vs Clawdbot</h2>
+        </div>
+        
+        <p>Son herramientas diferentes que trabajan juntas. Entender la diferencia es clave.</p>
+
+        <div class="comparison">
+            <div class="compare-box claude">
+                <h4>🟣 Claude Code</h4>
+                <ul>
+                    <li><strong>Qué es:</strong> CLI oficial de Anthropic</li>
+                    <li><strong>Corre en:</strong> Tu terminal local</li>
+                    <li><strong>Hace:</strong> Lee/escribe archivos, ejecuta comandos, programa</li>
+                    <li><strong>Sesión:</strong> Mientras la terminal esté abierta</li>
+                    <li><strong>Ideal para:</strong> Desarrollo, coding, tareas puntuales</li>
+                    <li><strong>Instalación:</strong> <code>npm i -g @anthropic-ai/claude-code</code></li>
+                </ul>
+            </div>
+            <div class="compare-box clawdbot">
+                <h4>🟢 Clawdbot (Jarvis)</h4>
+                <ul>
+                    <li><strong>Qué es:</strong> Framework de agentes autónomos</li>
+                    <li><strong>Corre en:</strong> Servidor 24/7 (EC2)</li>
+                    <li><strong>Hace:</strong> Telegram, memoria, crons, multi-canal</li>
+                    <li><strong>Sesión:</strong> Siempre activo</li>
+                    <li><strong>Ideal para:</strong> Asistente personal, automatización</li>
+                    <li><strong>Usa:</strong> Claude por debajo (API)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert">
+            <p><strong>💡 En resumen:</strong> Claude Code es la herramienta de desarrollo. Clawdbot es el sistema que me mantiene vivo 24/7 y me conecta a tus canales de comunicación.</p>
+        </div>
+    </section>
+
+    <!-- Section 2: Instalación -->
+    <section id="instalacion">
+        <div class="section-header">
+            <div class="section-icon">📦</div>
+            <h2>Instalación de Claude Code</h2>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <h4>Instalar Node.js (si no lo tienes)</h4>
+                <p>Claude Code requiere Node.js 18+</p>
+                <pre><code>brew install node</code></pre>
+            </div>
+            <div class="step">
+                <h4>Instalar Claude Code globalmente</h4>
+                <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+            </div>
+            <div class="step">
+                <h4>Configurar API Key</h4>
+                <p>Necesitas una API key de Anthropic</p>
+                <pre><code>export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
+            </div>
+            <div class="step">
+                <h4>Ejecutar Claude Code</h4>
+                <p>En cualquier directorio, corre:</p>
+                <pre><code>claude</code></pre>
+                <p>Esto abre una sesión interactiva. También puedes:</p>
+                <pre><code>claude "explícame este proyecto"
+claude commit  # commit inteligente
+claude review  # code review</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Hooks -->
+    <section id="hooks">
+        <div class="section-header">
+            <div class="section-icon">🪝</div>
+            <h2>Hooks: Automatización de Tareas</h2>
+        </div>
+
+        <p>Los Hooks son scripts que se ejecutan automáticamente en ciertos momentos del ciclo de Claude.</p>
+
+        <h3>Tipos de Hooks</h3>
+        <table>
+            <tr>
+                <th>Hook</th>
+                <th>Cuándo se ejecuta</th>
+                <th>Uso típico</th>
+            </tr>
+            <tr>
+                <td><code>PreToolUse</code></td>
+                <td>Antes de usar una herramienta</td>
+                <td>Validar permisos, logging</td>
+            </tr>
+            <tr>
+                <td><code>PostToolUse</code></td>
+                <td>Después de usar una herramienta</td>
+                <td>Auto-commit, notificaciones</td>
+            </tr>
+            <tr>
+                <td><code>PreMessage</code></td>
+                <td>Antes de cada respuesta</td>
+                <td>Contexto adicional</td>
+            </tr>
+            <tr>
+                <td><code>PostMessage</code></td>
+                <td>Después de cada respuesta</td>
+                <td>Logging, métricas</td>
+            </tr>
+        </table>
+
+        <h3>Crear un Hook</h3>
+        <p>Los hooks se configuran en <code>~/.claude/settings.json</code> o en el proyecto:</p>
+
+        <div class="code-label">~/.claude/settings.json</div>
+        <pre><code>{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "git add -A && git commit -m 'auto-commit'"
+      }
+    ]
+  }
+}</code></pre>
+
+        <div class="alert">
+            <p><strong>💡 Ejemplo práctico:</strong> Cada vez que Claude edita un archivo, automáticamente hace commit. Nunca pierdes cambios.</p>
+        </div>
+    </section>
+
+    <!-- Section 4: Skills -->
+    <section id="skills">
+        <div class="section-header">
+            <div class="section-icon">🎯</div>
+            <h2>Skills: Conocimiento Especializado</h2>
+        </div>
+
+        <p>Los Skills son archivos <code>.md</code> que le enseñan a Claude cómo hacer tareas específicas.</p>
+
+        <h3>Skills que Jarvis tiene</h3>
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon">🐙</div>
+                <h4>GitHub</h4>
+                <p>Usar gh CLI para issues, PRs, CI/CD, y queries avanzadas.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📝</div>
+                <h4>Notion</h4>
+                <p>Crear páginas, databases, y blocks via API.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">💬</div>
+                <h4>Slack</h4>
+                <p>Enviar mensajes, reacciones, pins en canales.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌤️</div>
+                <h4>Weather</h4>
+                <p>Obtener clima y pronóstico sin API key.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎬</div>
+                <h4>Video Frames</h4>
+                <p>Extraer frames de videos con ffmpeg.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔧</div>
+                <h4>Skill Creator</h4>
+                <p>Crear nuevos skills estructurados.</p>
+            </div>
+        </div>
+
+        <h3>Estructura de un Skill</h3>
+        <pre><code># SKILL.md - Mi Skill Personalizado
+
+## Descripción
+Qué hace este skill
+
+## Cuándo usar
+- Trigger 1
+- Trigger 2
+
+## Instrucciones
+1. Paso uno
+2. Paso dos
+
+## Comandos
+```bash
+comando ejemplo
+```</code></pre>
+
+        <h3>Dónde viven los Skills</h3>
+        <ul style="color: var(--text-dim); margin-left: 20px;">
+            <li><code>/skills/nombre/SKILL.md</code> — En el proyecto</li>
+            <li><code>~/.claude/skills/</code> — Globales del usuario</li>
+            <li>Instalados vía npm/git</li>
+        </ul>
+    </section>
+
+    <!-- Section 5: Computer Use -->
+    <section id="computer-use">
+        <div class="section-header">
+            <div class="section-icon">🖥️</div>
+            <h2>Computer Use: Control Visual</h2>
+        </div>
+
+        <p>Claude puede <strong>ver tu pantalla</strong> y <strong>controlar mouse/teclado</strong>. Es como tener a alguien sentado frente a tu compu.</p>
+
+        <h3>Qué puede hacer</h3>
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon">📸</div>
+                <h4>Ver la pantalla</h4>
+                <p>Toma screenshots y entiende lo que ve.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🖱️</div>
+                <h4>Mover el mouse</h4>
+                <p>Click, doble-click, arrastrar.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⌨️</div>
+                <h4>Escribir texto</h4>
+                <p>Input en cualquier campo.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🧭</div>
+                <h4>Navegar</h4>
+                <p>Abrir apps, menús, sitios web.</p>
+            </div>
+        </div>
+
+        <h3>Configuración en Mac</h3>
+        <div class="steps">
+            <div class="step">
+                <h4>Dar permisos de Accesibilidad</h4>
+                <p><code>System Settings → Privacy & Security → Accessibility</code></p>
+                <p>Agrega Terminal (o la app desde donde corres Claude).</p>
+            </div>
+            <div class="step">
+                <h4>Dar permisos de Screen Recording</h4>
+                <p><code>System Settings → Privacy & Security → Screen Recording</code></p>
+            </div>
+            <div class="step">
+                <h4>Probar con un comando simple</h4>
+                <pre><code>claude "abre Safari y busca 'clima hermosillo'"</code></pre>
+            </div>
+        </div>
+
+        <div class="alert warning">
+            <p><strong>⚠️ Nota:</strong> Computer Use consume más tokens porque envía screenshots. Úsalo cuando realmente necesites automatizar algo visual.</p>
+        </div>
+
+        <h3>Casos de uso</h3>
+        <ul style="color: var(--text-dim); margin-left: 20px;">
+            <li>Contestar mensajes en apps sin API (WhatsApp Web)</li>
+            <li>Llenar formularios automáticamente</li>
+            <li>Navegar sitios complejos (bancos, gobierno)</li>
+            <li>Automatizar tareas en apps de diseño</li>
+            <li>Testing visual de aplicaciones</li>
+        </ul>
+    </section>
+
+    <!-- Section 6: MCP -->
+    <section id="mcp">
+        <div class="section-header">
+            <div class="section-icon">🔌</div>
+            <h2>MCP: Model Context Protocol</h2>
+        </div>
+
+        <p>MCP es el sistema de <strong>plugins</strong> de Claude. Te permite conectar a herramientas externas, APIs, y bases de datos.</p>
+
+        <h3>Cómo funciona</h3>
+        <p>Un MCP Server es un programa que corre localmente y expone "herramientas" a Claude. Claude puede usar estas herramientas durante la conversación.</p>
+
+        <div class="code-label">Arquitectura</div>
+        <pre><code>Claude Code ←→ MCP Client ←→ MCP Server ←→ [Supabase, Slack, GitHub, etc.]</code></pre>
+
+        <h3>MCP Servers populares</h3>
+        <table>
+            <tr>
+                <th>Server</th>
+                <th>Qué hace</th>
+                <th>Instalación</th>
+            </tr>
+            <tr>
+                <td>@modelcontextprotocol/server-filesystem</td>
+                <td>Acceso a archivos</td>
+                <td>npm</td>
+            </tr>
+            <tr>
+                <td>@modelcontextprotocol/server-postgres</td>
+                <td>Queries a PostgreSQL</td>
+                <td>npm</td>
+            </tr>
+            <tr>
+                <td>@modelcontextprotocol/server-github</td>
+                <td>API de GitHub</td>
+                <td>npm</td>
+            </tr>
+            <tr>
+                <td>@modelcontextprotocol/server-slack</td>
+                <td>Mensajes de Slack</td>
+                <td>npm</td>
+            </tr>
+            <tr>
+                <td>mcp-server-fetch</td>
+                <td>HTTP requests</td>
+                <td>npm</td>
+            </tr>
+        </table>
+
+        <h3>Configurar un MCP Server</h3>
+        <div class="code-label">~/.claude/settings.json</div>
+        <pre><code>{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/sergio/projects"]
+    },
+    "postgres": {
+      "command": "npx", 
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://..."
+      }
+    }
+  }
+}</code></pre>
+
+        <h3>Recursos para aprender MCP</h3>
+        <div class="links">
+            <a href="https://modelcontextprotocol.io" class="link" target="_blank">
+                📖 Documentación oficial
+            </a>
+            <a href="https://github.com/modelcontextprotocol/servers" class="link" target="_blank">
+                🐙 Servidores disponibles
+            </a>
+            <a href="https://glama.ai/mcp/servers" class="link" target="_blank">
+                🔍 Directorio de MCPs
+            </a>
+        </div>
+    </section>
+
+    <!-- Section 7: Roadmap -->
+    <section id="roadmap">
+        <div class="section-header">
+            <div class="section-icon">🗺️</div>
+            <h2>Roadmap de Aprendizaje</h2>
+        </div>
+
+        <p>Sigue este orden para dominar Claude Code de manera efectiva:</p>
+
+        <div class="steps">
+            <div class="step">
+                <h4>Semana 1: Básicos de Claude Code</h4>
+                <p>Instala Claude Code, configura tu API key, y úsalo para tareas simples. Lee archivos, escribe código, ejecuta comandos. Familiarízate con el flujo conversacional.</p>
+            </div>
+            <div class="step">
+                <h4>Semana 2: CLAUDE.md y Contexto</h4>
+                <p>Aprende a crear archivos <code>CLAUDE.md</code> que definen instrucciones de proyecto. Claude los lee automáticamente. Es como "entrenar" a Claude para tu proyecto específico.</p>
+            </div>
+            <div class="step">
+                <h4>Semana 3: Hooks</h4>
+                <p>Crea tu primer hook. Empieza con algo simple como auto-commit después de editar archivos. Luego explora notificaciones, logging, y validaciones.</p>
+            </div>
+            <div class="step">
+                <h4>Semana 4: Skills</h4>
+                <p>Usa los skills existentes. Luego crea tu propio skill para una tarea que repitas frecuentemente.</p>
+            </div>
+            <div class="step">
+                <h4>Semana 5: Computer Use</h4>
+                <p>Configura los permisos en tu Mac. Prueba automatizaciones visuales simples. Entiende cuándo es útil y cuándo no.</p>
+            </div>
+            <div class="step">
+                <h4>Semana 6: MCP</h4>
+                <p>Instala un MCP server (filesystem o postgres). Aprende a conectar Claude a tus propias herramientas y APIs.</p>
+            </div>
+            <div class="step">
+                <h4>Avanzado: Construye tu agente</h4>
+                <p>Combina todo: hooks + skills + MCP + computer use para crear flujos de automatización completos.</p>
+            </div>
+        </div>
+
+        <div class="alert">
+            <p><strong>🎯 Pro tip:</strong> No intentes aprender todo a la vez. Domina cada pieza antes de pasar a la siguiente. La práctica diaria es clave.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p style="color: var(--accent); font-size: 16px; margin-bottom: 8px;">🚀 Guía Claude Code × Jarvis</p>
+        <p>Creada para Sergio Durán</p>
+        <p style="margin-top: 12px;">Última actualización: Marzo 2026</p>
+    </footer>
+</div>
+
+</body>
+</html>
